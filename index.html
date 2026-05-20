@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SnackAttack – Automaten Kiosk Hünfeld</title>
+  <meta name="description" content="SnackAttack – Dein 24/7 Automaten-Kiosk in Hünfeld. Snacks, Getränke, Coffee to Go, Vapes & mehr. Töpferstraße 4, 36088 Hünfeld." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #FF6B00;
+      --orange-glow: #FF8C00;
+      --orange-dim: #CC5500;
+      --black: #0A0A0A;
+      --dark: #111111;
+      --card: #181818;
+      --border: #2A2A2A;
+      --text: #F0F0F0;
+      --muted: #888;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE TEXTURE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 0.05em;
+      color: var(--orange);
+      text-decoration: none;
+      text-shadow: 0 0 20px rgba(255,107,0,0.4);
+    }
+
+    .badge-open {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--orange);
+      color: #000;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      padding: 0.45rem 1.1rem;
+      border-radius: 2px;
+      animation: pulse-badge 2s ease-in-out infinite;
+    }
+
+    .badge-open .dot {
+      width: 8px; height: 8px;
+      background: #000;
+      border-radius: 50%;
+      animation: blink 1.2s step-start infinite;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+    @keyframes pulse-badge {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,0,0.5); }
+      50% { box-shadow: 0 0 0 8px rgba(255,107,0,0); }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      padding: 7rem 1.5rem 4rem;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% 40%, rgba(255,107,0,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(255,107,0,0.06) 0%, transparent 60%),
+        linear-gradient(180deg, #0A0A0A 0%, #111 50%, #0A0A0A 100%);
+      z-index: -1;
+    }
+
+    /* Diagonal stripe pattern */
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 40px,
+        rgba(255,107,0,0.015) 40px,
+        rgba(255,107,0,0.015) 41px
+      );
+    }
+
+    .hero-content { max-width: 780px; }
+
+    .hero-eyebrow {
+      display: inline-block;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.3em;
+      color: var(--orange);
+      border: 1px solid var(--orange-dim);
+      padding: 0.3rem 1rem;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.2s;
+    }
+
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 10vw, 7rem);
+      line-height: 0.95;
+      letter-spacing: 0.03em;
+      color: var(--text);
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.4s;
+    }
+
+    .hero h1 span {
+      color: var(--orange);
+      display: block;
+      text-shadow: 0 0 40px rgba(255,107,0,0.3);
+    }
+
+    .hero-sub {
+      margin-top: 1.5rem;
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      color: var(--muted);
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.6s;
+    }
+
+    .hero-cta {
+      margin-top: 2.5rem;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.8s;
+    }
+
+    .btn-primary {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.12em;
+      background: var(--orange);
+      color: #000;
+      border: none;
+      padding: 0.9rem 2.2rem;
+      border-radius: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      display: inline-block;
+    }
+    .btn-primary:hover {
+      background: var(--orange-glow);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255,107,0,0.35);
+    }
+
+    .btn-ghost {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.12em;
+      background: transparent;
+      color: var(--orange);
+      border: 1px solid var(--orange-dim);
+      padding: 0.9rem 2.2rem;
+      border-radius: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      display: inline-block;
+    }
+    .btn-ghost:hover {
+      background: rgba(255,107,0,0.08);
+      transform: translateY(-2px);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── SCROLL INDICATOR ── */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      opacity: 0.4;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .scroll-hint svg { animation: bounce 1.6s ease-in-out infinite; }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(6px); }
+    }
+
+    /* ── SECTIONS COMMON ── */
+    section { position: relative; z-index: 1; }
+
+    .section-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.35em;
+      color: var(--orange);
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      letter-spacing: 0.03em;
+      line-height: 1;
+      color: var(--text);
+    }
+
+    /* ── SORTIMENT ── */
+    .sortiment {
+      padding: 6rem 1.5rem;
+      background: var(--dark);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sortiment-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 900px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .grid-4 { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--orange);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      border-color: var(--orange-dim);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+    }
+    .card:hover::before { transform: scaleX(1); }
+
+    .card-icon {
+      font-size: 2.4rem;
+      line-height: 1;
+    }
+
+    .card h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+      color: var(--text);
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .card-tag {
+      display: inline-block;
+      background: rgba(255,107,0,0.12);
+      color: var(--orange);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      border-radius: 2px;
+    }
+
+    /* ── STANDORT ── */
+    .standort {
+      padding: 6rem 1.5rem;
+    }
+
+    .standort-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    @media (max-width: 768px) {
+      .standort-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+    }
+
+    .standort-info { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .address-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--orange);
+      border-radius: 4px;
+      padding: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .address-block .pin { font-size: 1.8rem; flex-shrink: 0; margin-top: 2px; }
+
+    .address-block h4 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 0.05em;
+      color: var(--orange);
+      margin-bottom: 0.25rem;
+    }
+
+    .address-block p { font-size: 1rem; line-height: 1.5; }
+
+    .hours-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.5rem;
+    }
+
+    .hours-block h4 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 0.05em;
+      color: var(--orange);
+      margin-bottom: 0.75rem;
+    }
+
+    .hours-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.95rem;
+    }
+    .hours-row:last-child { border-bottom: none; }
+    .hours-open { color: #4ade80; font-weight: 700; }
+
+    .map-placeholder {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      position: relative;
+    }
+
+    .map-placeholder iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      position: absolute;
+      inset: 0;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0 1.5rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 1.5rem;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: center;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      color: var(--orange);
+      letter-spacing: 0.05em;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--orange); }
+
+    .footer-notice {
+      font-size: 0.78rem;
+      color: #555;
+      max-width: 500px;
+      line-height: 1.5;
+    }
+    .footer-notice svg { vertical-align: middle; margin-right: 4px; }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: #444;
+    }
+
+    /* ── ORANGE DIVIDER RULE ── */
+    .orange-rule {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      justify-content: center;
+      margin: 0.5rem 0;
+    }
+    .orange-rule::before, .orange-rule::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--orange-dim));
+    }
+    .orange-rule::after { background: linear-gradient(90deg, var(--orange-dim), transparent); }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a href="#" class="logo">SnackAttack</a>
+  <div class="badge-open">
+    <span class="dot"></span>
+    24/7 GEÖFFNET
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="start">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Automaten Kiosk · Hünfeld</div>
+    <h1>
+      Power für<br>
+      <span>deinen Hunger!</span>
+      Rund um die Uhr.
+    </h1>
+    <p class="hero-sub">
+      Snacks, Getränke, Good Vibes.<br>
+      Dein Automaten-Kiosk in Hünfeld – immer für dich da.
+    </p>
+    <div class="hero-cta">
+      <a href="#sortiment" class="btn-primary">Sortiment entdecken</a>
+      <a href="#standort" class="btn-ghost">Standort & Adresse</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 2v14M2 12l6 6 6-6" stroke="#FF6B00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+</section>
+
+<!-- SORTIMENT -->
+<section class="sortiment" id="sortiment">
+  <div class="sortiment-header">
+    <div class="section-label">Was wir bieten</div>
+    <div class="section-title">Das Sortiment</div>
+  </div>
+
+  <div class="grid-4">
+    <div class="card">
+      <div class="card-icon">🥤</div>
+      <div>
+        <div class="card-tag">Kalt & Heiß</div>
+        <h3>Getränke</h3>
+      </div>
+      <p>Erfrischende Kaltgetränke, Energy Drinks und heiße Heißgetränke – inklusive regionaler Produkte direkt aus der Region.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">💨</div>
+      <div>
+        <div class="card-tag">Vapes & Tobacco</div>
+        <h3>Vapes & Tabakwaren</h3>
+      </div>
+      <p>Große Auswahl an E-Zigaretten, Vape-Liquids und Tabakwaren. Nur für Erwachsene ab 18 Jahren!</p>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🍬</div>
+      <div>
+        <div class="card-tag">Snacks</div>
+        <h3>Süßes & Snacks</h3>
+      </div>
+      <p>Von Schokolade über Chips bis hin zu herzhaften Snacks – für jeden Heißhunger das Richtige, rund um die Uhr.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">☕</div>
+      <div>
+        <div class="card-tag">Coffee to Go</div>
+        <h3>Kaffee to Go</h3>
+      </div>
+      <p>Frisch gebrühter Kaffee auf Knopfdruck. Espresso, Cappuccino und mehr – der perfekte Start in den Tag, jederzeit.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STANDORT -->
+<section class="standort" id="standort">
+  <div class="standort-inner">
+    <div class="standort-info">
+      <div class="section-label">Wo du uns findest</div>
+      <div class="section-title">Komm vorbei –<br>wir sind<br><span style="color:var(--orange)">immer da!</span></div>
+
+      <div class="address-block">
+        <div class="pin">📍</div>
+        <div>
+          <h4>Adresse</h4>
+          <p>Töpferstraße 4<br>36088 Hünfeld</p>
+        </div>
+      </div>
+
+      <a href="https://maps.google.com/?q=Töpferstraße+4,+36088+Hünfeld" target="_blank" class="btn-primary" style="align-self:flex-start;">
+         In Google Maps öffnen
+      </a>
+    </div>
+
+    <div class="map-placeholder">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2522.0!2d9.7659!3d50.6657!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47be34e6f4e8b1e3%3A0x0!2zVMO2cGZlcnN0cmHDn2UgNCwgMzYwODggSMO8bmZlbGQ!5e0!3m2!1sde!2sde!4v1700000000000!5m2!1sde!2sde"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="SnackAttack Standort Karte">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">SnackAttack</div>
+    <p style="color:var(--muted);font-size:0.85rem;max-width:420px;text-align:center;">
+      Automaten Kiosk · Töpferstraße 4 · 36088 Hünfeld
+    </p>
+    <div class="footer-links">
+      <a href="impressum.html" target="_blank">Impressum</a>
+      <a href="datenschutz.html"target="_blank">Datenschutz</a>
+      <a href="#start">Nach oben ↑</a>
+    </div>
+    <div class="footer-notice">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Eingang &amp; Innenraum ist zu deiner Sicherheit videoüberwacht. Einbruch lohnt sich nicht – Automaten werden täglich geleert.
+    </div>
+    <div class="footer-copy">
+      © <span id="year"></span> SnackAttack – Automaten Kiosk. Alle Rechte vorbehalten.
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Smooth reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.card').forEach((el, i) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+    el.style.transition = `opacity 0.5s ease ${i * 0.1}s, transform 0.5s ease ${i * 0.1}s, border-color 0.25s, box-shadow 0.25s`;
+    observer.observe(el);
+  });
+
+  document.querySelectorAll('.address-block, .hours-block').forEach((el, i) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = `opacity 0.5s ease ${i * 0.15}s, transform 0.5s ease ${i * 0.15}s`;
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>

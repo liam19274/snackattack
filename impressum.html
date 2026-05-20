@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Impressum – SnackAttack Hünfeld</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #FF6B00;
+      --orange-dim: #CC5500;
+      --black: #0A0A0A;
+      --card: #181818;
+      --border: #2A2A2A;
+      --text: #F0F0F0;
+      --muted: #888;
+    }
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      line-height: 1.6;
+      padding: 4rem 1.5rem;
+      display: flex;
+      justify-content: center;
+    }
+    .wrapper { max-width: 700px; width: 100%; }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem;
+      color: var(--orange);
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.05em;
+    }
+    .subtitle { color: var(--muted); margin-bottom: 2.5rem; font-size: 0.9rem; }
+    h3 { font-size: 1.2rem; margin: 2rem 0 0.5rem; color: #fff; }
+    p { color: #ccc; font-size: 0.95rem; margin-bottom: 1.5rem; }
+    
+    /* Steckbrief-Boxen */
+    .address-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--orange);
+      border-radius: 4px;
+      padding: 1.5rem;
+      display: flex;
+      gap: 1.2rem;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+    .pin { font-size: 1.8rem; flex-shrink: 0; }
+    .address-block h4 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 0.05em;
+      color: var(--orange);
+      margin-bottom: 0.25rem;
+    }
+    .address-block p { margin-bottom: 0; color: var(--text); }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+  <h1>Impressum</h1>
+  <p class="subtitle">Angaben gemäß § 5 DDG (Digitale-Dienste-Gesetz)</p>
+  
+  <div class="address-block">
+    <div class="pin">👤</div>
+    <div>
+      <h4>Kiosk-Betreiber (Inhaber)</h4>
+      <p style="font-weight: 600;"></p>
+    </div>
+  </div>
+
+  <div class="address-block">
+    <div class="pin">📍</div>
+    <div>
+      <h4>Geschäftsadresse</h4>
+      <p>Töpferstraße 4</p>
+      <p>36088 Hünfeld</p>
+    </div>
+  </div>
+
+  <div class="address-block">
+    <div class="pin">📞</div>
+    <div>
+      <h4>Erreichbarkeit</h4>
+      <p>Telefon:</p>
+      <p>E-Mail:<span style="color: var(--orange);"></span></p>
+    </div>
+  </div>
+
+  <div class="address-block">
+    <div class="pin">📄</div>
+    <div>
+      <h4>Umsatzsteuer-ID</h4>
+      <p></p>
+    </div>
+  </div>
+
+  <h3>Streitschlichtung</h3>
+  <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr" target="_blank" style="color:var(--orange); text-decoration: none;">https://ec.europa.eu/consumers/odr</a>.<br>Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+</div>
+
+</body>
+</html>
